@@ -2,16 +2,54 @@ version: '3.1'
 
 services:
   mongo1:
+    container_name: mongo1
     image: mongo:4.2.20-bionic
     restart: always
     ports:
       - 27017:27017
     volumes:
-      - ./data/mongo:/data/db
+      - ./data/db1:/data/db
       - ./scripts/setup-mongo-replset.sh:/scripts/setup-mongo-replset.sh
+      - ./scripts/setup-mongo-admin-user.sh:/scripts/setup-mongo-admin-user.sh
     command: mongod -replSet rs0
 
+  mongo2:
+    container_name: mongo2
+    image: mongo:4.2.20-bionic
+    restart: always
+    ports:
+      - 27018:27017
+    volumes:
+      - ./data/db2:/data/db
+    command: mongod -replSet rs0
+
+  mongo3:
+    container_name: mongo3
+    image: mongo:4.2.20-bionic
+    restart: always
+    ports:
+      - 27019:27017
+    volumes:
+      - ./data/db3:/data/db
+      - ./rs-init.sh:/scripts/rs-init.sh
+    command: mongod -replSet rs0
+
+  ## only enable mongo-express after setting up the replset and admin user
+  # mongo-express:
+  #   container_name: mongo-express
+  #   image: mongo-express:1.0.0-alpha.4
+  #   restart: always
+  #   ports:
+  #     - 18081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_URL: mongodb://admin:admin@mongo1:27017,mongo2:27017,mongo3:27017/admin?replicaSet=rs0
+  #   depends_on:
+  #     - mongo1
+  #     - mongo2
+  #     - mongo3
+
   timescaledb:
+    container_name: timescaledb
     image: timescale/timescaledb:latest-pg14
     restart: always
     ports:
@@ -26,6 +64,7 @@ services:
       POSTGRES_PASSWORD: postgres
 
   redis:
+    container_name: redis
     image: redis:7.0.0-alpine
     restart: always
     ports:
