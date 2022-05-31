@@ -38,7 +38,7 @@ Need to setup replset and admin user for mongo
 
 1. Watch logs to make sure its started
 ```
-docker compose logs mongo1 mongo2 mongo3 -f
+docker compose logs mongo1 -f
 ```
 
 2. Setup replica set
@@ -48,10 +48,10 @@ docker compose exec mongo1 /scripts/setup-mongo-replset.sh
 
 3. Watch logs to make sure replset is completed. This could take a while (up to 30 seconds)
 ```
-docker compose logs mongo1 mongo2 mongo3 -f
+docker compose logs mongo1 -f
 ```
 
-4. Setup admin user
+4. Setup admin user (optional if you want to use `mongo-express`)
 ```
 docker compose exec mongo1 /scripts/setup-mongo-admin-user.sh
 ```
@@ -74,16 +74,12 @@ docker compose down
 docker compose up -d
 ```
 
+5. Once `mongo-express` has been started successfully, you can access it by going to [http://localhost:18081](http://localhost:18081)
+
+Note: argo-cd uses port 8081, and mongo-express uses the same port. Because of this conflict, we will use port 18081 for mongo-express.
+
 ## timescaledb
 
-Need to setup extra extensions for timescaledb (postgres)
+Nothing extra to do.
 
-1. Watch logs to make sure its started
-```
-docker compose logs timescaledb -f
-```
-
-2. Install db extensions
-```
-docker compose exec timescaledb /scripts/setup-timescaledb.sh
-```
+Timescaledb is setup by the docker container, and pgcrypto is setup by `gitops-server`
