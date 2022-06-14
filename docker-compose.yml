@@ -14,16 +14,16 @@ services:
     command: mongod -replSet rs0
 
   ## only enable mongo-express after setting up the replset and admin user
-  mongo-express:
-    container_name: mongo-express
-    image: mongo-express:1.0.0-alpha.4
-    restart: always
-    ports:
-      - 18081:8081
-    environment:
-      ME_CONFIG_MONGODB_URL: mongodb://admin:admin@mongo1:27017/admin?replicaSet=rs0
-    depends_on:
-      - mongo1
+  # mongo-express:
+  #   container_name: mongo-express
+  #   image: mongo-express:1.0.0-alpha.4
+  #   restart: always
+  #   ports:
+  #     - 18081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_URL: mongodb://admin:admin@mongo1:27017/admin?replicaSet=rs0
+  #   depends_on:
+  #     - mongo1
 
   timescaledb:
     container_name: timescaledb
